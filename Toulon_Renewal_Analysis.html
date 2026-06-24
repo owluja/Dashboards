@@ -14,8 +14,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--body-font);font-si
 .header-sub{font-size:11px;color:var(--muted);margin-top:4px}
 .header-row{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px}
 .header-meta{font-size:11px;color:var(--muted);text-align:right}
+
+/* TABS */
+.tabs{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:5px;margin:16px 32px 0;flex-wrap:wrap}
+.tab{padding:7px 18px;font-size:12px;cursor:pointer;border:none;background:transparent;color:var(--muted);border-radius:6px;font-family:var(--body-font);letter-spacing:0.3px;transition:all .15s}
+.tab.active{background:var(--accent);color:#fff;font-weight:600}
+.tab:hover:not(.active){background:var(--surface2);color:var(--text)}
+.panel{display:none}.panel.active{display:block}
+
 .main{max-width:1200px;margin:0 auto;padding:24px 32px}
-@media(max-width:640px){.main{padding:14px 16px}}
+@media(max-width:640px){.main{padding:14px 16px}.tabs{margin:12px 14px 0}}
 .section{margin-bottom:32px}
 .section-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;margin-bottom:20px}
@@ -42,33 +50,23 @@ tr.now td{background:rgba(78,207,122,0.06)}
 .amber-box{background:rgba(241,168,78,0.08);border:1px solid rgba(241,168,78,0.3);border-radius:6px;padding:12px 16px;font-size:12px;color:var(--accent2);margin-bottom:16px}
 .chart-wrap{position:relative;width:100%;height:240px}
 .divider{height:1px;background:var(--border);margin:28px 0}
-/* Milestone tabs */
 .mtab-row{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap}
 .mtab{padding:6px 14px;font-size:12px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--muted);border-radius:5px;font-family:var(--body-font);transition:all .15s}
 .mtab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 .mpanel{display:none}.mpanel.active{display:block}
-/* Waterfall cards */
 .wf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:12px}
 .wf-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px}
 .wf-card.now{border-color:rgba(78,207,122,0.4)}
 .wf-sc-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-.wf-sc-label.opt{color:#4e9af1}
-.wf-sc-label.base{color:#4ecf7a}
-.wf-sc-label.cons{color:#b89af1}
-.wf-sc-label.now{color:#4ecf7a}
+.wf-sc-label.opt{color:#4e9af1}.wf-sc-label.base{color:#4ecf7a}.wf-sc-label.cons{color:#b89af1}.wf-sc-label.now{color:#4ecf7a}
 .wf-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(46,50,72,0.4);font-size:12px}
 .wf-row:last-child{border-bottom:none}
-.wf-row.spacer{padding:2px 0;border-bottom:none}
 .wf-row.total{border-top:1px solid var(--border);padding-top:8px;font-weight:600}
 .wf-row.rent{background:rgba(78,154,241,0.06);padding:5px 6px;border-radius:4px;border-bottom:none;margin-top:6px}
 .wf-row.surplus-val{padding-top:8px;font-weight:700;font-size:13px}
-.lbl{color:var(--muted);font-size:11px}
-.lbl.main{color:var(--text);font-size:12px}
+.lbl{color:var(--muted);font-size:11px}.lbl.main{color:var(--text);font-size:12px}
 .val{font-variant-numeric:tabular-nums}
-.val.green{color:var(--green);font-weight:600}
-.val.amber{color:var(--accent2);font-weight:600}
-.val.red{color:var(--red);font-weight:600}
-.val.blue{color:var(--accent);font-weight:600}
+.val.green{color:var(--green);font-weight:600}.val.amber{color:var(--accent2);font-weight:600}.val.red{color:var(--red);font-weight:600}.val.blue{color:var(--accent);font-weight:600}
 </style>
 </head>
 <body>
@@ -83,9 +81,15 @@ tr.now td{background:rgba(78,207,122,0.06)}
   </div>
 </div>
 
-<div class="main">
+<div class="tabs">
+  <button class="tab active" onclick="showTab('overview',this)">Overview</button>
+  <button class="tab" onclick="showTab('cashflow',this)">Cash Flow Waterfalls</button>
+  <button class="tab" onclick="showTab('amortization',this)">Rate Sensitivity & Amortization</button>
+</div>
 
-<!-- ── RENEWAL SUMMARY ── -->
+<!-- ══ TAB 1: OVERVIEW ══ -->
+<div id="overview" class="panel active">
+<div class="main">
 <div class="section">
 <div class="section-label">Renewal at a Glance</div>
 <div class="kpi-grid">
@@ -99,7 +103,28 @@ tr.now td{background:rgba(78,207,122,0.06)}
 <div class="green-box">Current net surplus of $49,936/yr absorbs the $32,309 annual cost increase at renewal — cash flow remains positive across all scenarios even before projected NOI growth. Distributions of $60K/yr ($30K each) are sustainable at all renewal rates modelled.</div>
 </div>
 
-<!-- ── CASH FLOW WATERFALLS ── -->
+<div class="section">
+<div class="section-label">Summary — All Milestones · Base Case</div>
+<div class="card">
+<div class="card-title">Base case scenario · revenue +3.5%/yr · opex +3.5%/yr</div>
+<table>
+<thead><tr><th>Year</th><th>Revenue</th><th>Opex</th><th>Cash NOI</th><th>Mortgage</th><th>After mortgage</th><th>Distributions</th><th>Net surplus</th><th>Avg rent/unit</th><th>Mtg balance</th></tr></thead>
+<tbody>
+<tr class="now"><td>2025 (current)</td><td>$449K</td><td>$187K</td><td>$262K</td><td>$152K</td><td>$110K</td><td>($60K)</td><td style="color:var(--green);font-weight:600">$50K</td><td style="color:var(--accent);font-weight:600">$1,255</td><td>$2,911K</td></tr>
+<tr><td>2031 (renewal)</td><td>$552K</td><td>$230K</td><td>$322K</td><td>$176K*</td><td>$146K</td><td>($60K)</td><td style="color:var(--green);font-weight:600">$86K</td><td style="color:var(--accent);font-weight:600">$1,542</td><td>$2,275K</td></tr>
+<tr class="hl"><td>2035 (+4yr)</td><td>$634K</td><td>$264K</td><td>$370K</td><td>$184K</td><td>$185K</td><td>($60K)</td><td style="color:var(--green);font-weight:600">$125K</td><td style="color:var(--accent);font-weight:600">$1,770</td><td>$2,101K</td></tr>
+<tr class="hl"><td>2045 (+14yr)</td><td>$894K</td><td>$372K</td><td>$522K</td><td>$184K</td><td>$337K</td><td>($60K)</td><td style="color:var(--green);font-weight:600">$277K</td><td style="color:var(--accent);font-weight:600">$2,496</td><td>$968K</td></tr>
+<tr><td>2051 (payoff)</td><td>~$1.1M</td><td>~$455K</td><td>~$645K</td><td>$0</td><td>~$645K</td><td>($60K)</td><td style="color:var(--green);font-weight:600">~$585K</td><td style="color:var(--accent);font-weight:600">~$3,060</td><td>$0</td></tr>
+</tbody></table>
+<div class="note">* 2031 mortgage cost is blended (3mo @ 2.25% + 9mo @ 4.5% = $176K). Full-year @ 4.5% = $184K from 2032. Rent per unit assumes 97% occupancy and residential rent as 97.5% of total revenue.</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ══ TAB 2: CASH FLOW WATERFALLS ══ -->
+<div id="cashflow" class="panel">
+<div class="main">
 <div class="section">
 <div class="section-label">Cash Flow Waterfall — Select Year</div>
 <div class="mtab-row">
@@ -109,7 +134,6 @@ tr.now td{background:rgba(78,207,122,0.06)}
   <button class="mtab" onclick="showM('m2045',this)">2045 — 14yr post-renewal</button>
 </div>
 
-<!-- 2025 CURRENT -->
 <div id="m2025" class="mpanel active">
 <div class="info-box">2025 actuals from Yardi P&amp;L and Welch LLP financial statements. Average rent per unit based on 97% occupancy and residential rent as ~97.5% of total revenue.</div>
 <div class="wf-grid">
@@ -131,7 +155,6 @@ tr.now td{background:rgba(78,207,122,0.06)}
 <div class="note">The current $50K annual surplus stays in the building account for capital reserves and future capex. With the renewal payment increase of $32K/yr, the surplus narrows but does not disappear — and by 2031 projected NOI growth more than compensates.</div>
 </div>
 
-<!-- 2031 -->
 <div id="m2031" class="mpanel">
 <div class="amber-box">2031 is a transition year — mortgage runs at 2.25% for 3 months (Jan–Mar), then renews at 4.5% for 9 months. Annual cost shown is the blended figure (~$176K). Full-year cost at 4.5% begins 2032 at $184K/yr.</div>
 <div class="wf-grid">
@@ -172,10 +195,9 @@ tr.now td{background:rgba(78,207,122,0.06)}
     <div class="wf-row"><span class="lbl">Mortgage balance (EOY)</span><span class="val">$2,274,912</span></div>
   </div>
 </div>
-<div class="note">By 2031 rents need to be in the $1,498–$1,587/unit range — roughly 3–4%/yr growth from today's $1,268, consistent with Ontario rent guideline history. Mortgage balance down $636K from today despite the higher rate.</div>
+<div class="note">By 2031 rents need to be in the $1,498–$1,587/unit range — roughly 3–4%/yr growth from today's $1,268, consistent with Ontario rent guideline history.</div>
 </div>
 
-<!-- 2035 -->
 <div id="m2035" class="mpanel">
 <div class="info-box">2035 is 4 years into the new mortgage term. Full $184,481 annual payment. Of that, $96,717 (52%) is interest and $87,763 (48%) is principal — balance down to $2.10M from $2.43M at renewal.</div>
 <div class="wf-grid">
@@ -190,7 +212,6 @@ tr.now td{background:rgba(78,207,122,0.06)}
     <div class="wf-row surplus-val"><span>Net surplus</span><span class="val green">$169,024</span></div>
     <div class="wf-row rent"><span class="lbl" style="color:var(--accent)">Avg rent/unit (97% occ.)</span><span class="val blue">$1,857/mo</span></div>
     <div class="wf-row"><span class="lbl">Mortgage balance (EOY)</span><span class="val">$2,101,405</span></div>
-    <div class="wf-row"><span class="lbl">Interest portion of payment</span><span class="val">52% · $96,717</span></div>
   </div>
   <div class="wf-card">
     <div class="wf-sc-label base">Base case · Rev +3.5% / Opex +3.5%</div>
@@ -203,7 +224,6 @@ tr.now td{background:rgba(78,207,122,0.06)}
     <div class="wf-row surplus-val"><span>Net surplus</span><span class="val green">$125,249</span></div>
     <div class="wf-row rent"><span class="lbl" style="color:var(--accent)">Avg rent/unit (97% occ.)</span><span class="val blue">$1,770/mo</span></div>
     <div class="wf-row"><span class="lbl">Mortgage balance (EOY)</span><span class="val">$2,101,405</span></div>
-    <div class="wf-row"><span class="lbl">Interest portion of payment</span><span class="val">52% · $96,717</span></div>
   </div>
   <div class="wf-card">
     <div class="wf-sc-label cons">Conservative · Rev +3% / Opex +4%</div>
@@ -216,13 +236,10 @@ tr.now td{background:rgba(78,207,122,0.06)}
     <div class="wf-row surplus-val"><span>Net surplus</span><span class="val green">$82,250</span></div>
     <div class="wf-row rent"><span class="lbl" style="color:var(--accent)">Avg rent/unit (97% occ.)</span><span class="val blue">$1,686/mo</span></div>
     <div class="wf-row"><span class="lbl">Mortgage balance (EOY)</span><span class="val">$2,101,405</span></div>
-    <div class="wf-row"><span class="lbl">Interest portion of payment</span><span class="val">52% · $96,717</span></div>
   </div>
 </div>
-<div class="note">By 2035 rents of $1,686–$1,857/unit are required — roughly 3–4%/yr growth from today. Surplus has grown substantially across all scenarios as NOI growth outpaces the higher mortgage cost. $82K minimum surplus in conservative — well above the $60K distributions.</div>
 </div>
 
-<!-- 2045 -->
 <div id="m2045" class="mpanel">
 <div class="info-box">2045 is 14 years into the renewal term — 6 years from payoff. Only 25% of the $184,481 payment is now interest ($46,956). Mortgage balance down to $968K from $2.43M at renewal — $1.46M of principal repaid.</div>
 <div class="wf-grid">
@@ -237,7 +254,6 @@ tr.now td{background:rgba(78,207,122,0.06)}
     <div class="wf-row surplus-val"><span>Net surplus</span><span class="val green">$401,905</span></div>
     <div class="wf-row rent"><span class="lbl" style="color:var(--accent)">Avg rent/unit (97% occ.)</span><span class="val blue">$2,749/mo</span></div>
     <div class="wf-row"><span class="lbl">Mortgage balance (EOY)</span><span class="val">$968,461</span></div>
-    <div class="wf-row"><span class="lbl">Interest portion of payment</span><span class="val">25% · $46,956</span></div>
   </div>
   <div class="wf-card">
     <div class="wf-sc-label base">Base case · Rev +3.5% / Opex +3.5%</div>
@@ -250,7 +266,6 @@ tr.now td{background:rgba(78,207,122,0.06)}
     <div class="wf-row surplus-val"><span>Net surplus</span><span class="val green">$277,059</span></div>
     <div class="wf-row rent"><span class="lbl" style="color:var(--accent)">Avg rent/unit (97% occ.)</span><span class="val blue">$2,496/mo</span></div>
     <div class="wf-row"><span class="lbl">Mortgage balance (EOY)</span><span class="val">$968,461</span></div>
-    <div class="wf-row"><span class="lbl">Interest portion of payment</span><span class="val">25% · $46,956</span></div>
   </div>
   <div class="wf-card">
     <div class="wf-sc-label cons">Conservative · Rev +3% / Opex +4%</div>
@@ -263,32 +278,16 @@ tr.now td{background:rgba(78,207,122,0.06)}
     <div class="wf-row surplus-val"><span>Net surplus</span><span class="val green">$156,841</span></div>
     <div class="wf-row rent"><span class="lbl" style="color:var(--accent)">Avg rent/unit (97% occ.)</span><span class="val blue">$2,266/mo</span></div>
     <div class="wf-row"><span class="lbl">Mortgage balance (EOY)</span><span class="val">$968,461</span></div>
-    <div class="wf-row"><span class="lbl">Interest portion of payment</span><span class="val">25% · $46,956</span></div>
   </div>
 </div>
-<div class="note">By 2045 rents of $2,266–$2,749/unit reflect ~4–5% compounded growth over 20 years — consistent with historical Ontario inflationary trends. The fixed $184K mortgage cost is now a shrinking share of a much larger NOI. Surplus before distributions is $217K–$462K.</div>
+</div>
+</div>
 </div>
 </div>
 
-<!-- ── SUMMARY TABLE ── -->
-<div class="section">
-<div class="section-label">Summary — All Milestones · Base Case</div>
-<div class="card">
-<div class="card-title">Base case scenario · revenue +3.5%/yr · opex +3.5%/yr</div>
-<table>
-<thead><tr><th>Year</th><th>Revenue</th><th>Opex</th><th>Cash NOI</th><th>Mortgage</th><th>After mortgage</th><th>Distributions</th><th>Net surplus</th><th>Avg rent/unit</th><th>Mtg balance</th></tr></thead>
-<tbody>
-<tr class="now"><td>2025 (current)</td><td>$449K</td><td>$187K</td><td>$262K</td><td>$152K</td><td>$110K</td><td>($60K)</td><td style="color:var(--green);font-weight:600">$50K</td><td style="color:var(--accent);font-weight:600">$1,255</td><td>$2,911K</td></tr>
-<tr><td>2031 (renewal)</td><td>$552K</td><td>$230K</td><td>$322K</td><td>$176K*</td><td>$146K</td><td>($60K)</td><td style="color:var(--green);font-weight:600">$86K</td><td style="color:var(--accent);font-weight:600">$1,542</td><td>$2,275K</td></tr>
-<tr class="hl"><td>2035 (+4yr)</td><td>$634K</td><td>$264K</td><td>$370K</td><td>$184K</td><td>$185K</td><td>($60K)</td><td style="color:var(--green);font-weight:600">$125K</td><td style="color:var(--accent);font-weight:600">$1,770</td><td>$2,101K</td></tr>
-<tr class="hl"><td>2045 (+14yr)</td><td>$894K</td><td>$372K</td><td>$522K</td><td>$184K</td><td>$337K</td><td>($60K)</td><td style="color:var(--green);font-weight:600">$277K</td><td style="color:var(--accent);font-weight:600">$2,496</td><td>$968K</td></tr>
-<tr><td>2051 (payoff)</td><td>~$1.1M</td><td>~$455K</td><td>~$645K</td><td>$0</td><td>~$645K</td><td>($60K)</td><td style="color:var(--green);font-weight:600">~$585K</td><td style="color:var(--accent);font-weight:600">~$3,060</td><td>$0</td></tr>
-</tbody></table>
-<div class="note">* 2031 mortgage cost is blended (3mo @ 2.25% + 9mo @ 4.5% = $176K). Full-year @ 4.5% = $184K from 2032. Rent per unit assumes 97% occupancy and residential rent as 97.5% of total revenue. 2051 figures are estimates.</div>
-</div>
-</div>
-
-<!-- ── RATE SENSITIVITY ── -->
+<!-- ══ TAB 3: RATE SENSITIVITY & AMORTIZATION ══ -->
+<div id="amortization" class="panel">
+<div class="main">
 <div class="section">
 <div class="section-label">Renewal Rate Sensitivity — Base Case Cash NOI ~$322K at 2031</div>
 <div class="card">
@@ -304,11 +303,10 @@ tr.now td{background:rgba(78,207,122,0.06)}
 <tr><td>6.0%</td><td>$17,623</td><td>$211,476</td><td>$322,198</td><td>$110,722</td><td>($60,000)</td><td style="color:var(--accent2);font-weight:600">$50,722</td></tr>
 <tr><td>6.5%</td><td>$18,406</td><td>$220,872</td><td>$322,198</td><td>$101,326</td><td>($60,000)</td><td style="color:var(--red);font-weight:600">$41,326</td></tr>
 </tbody></table>
-<div class="note">★ Base assumption. Even at 6.5% the building generates $41K surplus after full distributions — the renewal rate is not a cash flow threat at any realistic rate. The mortgage rate stays at 20yr amortization throughout; extending amortization is not required to sustain positive cash flow.</div>
+<div class="note">★ Base assumption. Even at 6.5% the building generates $41K surplus after full distributions — the renewal rate is not a cash flow threat at any realistic rate.</div>
 </div>
 </div>
 
-<!-- ── AMORTIZATION ── -->
 <div class="section">
 <div class="section-label">Post-Renewal Amortization — $2,430,000 @ 4.5% · 20 years · paid off 2051</div>
 <div class="card">
@@ -341,44 +339,53 @@ tr.now td{background:rgba(78,207,122,0.06)}
 <tr><td>2050</td><td>$352,214</td><td>$12,328</td><td>$172,153</td><td>$184,481</td><td>$180,061</td><td>7%</td></tr>
 <tr><td>2051 — paid off</td><td>$180,061</td><td>$4,419</td><td>$180,061</td><td>$184,481</td><td>$0</td><td>2%</td></tr>
 </tbody></table>
-<div class="note">★ 2035 and 2045 highlighted to match waterfall milestones. Interest/principal crossover occurs in 2037 (year 6 of new term) when principal exceeds interest for the first time. Total interest over 20 years: ~$1,164,000. Total principal: ~$2,430,000. Assume 20yr remaining amortization at renewal — confirm with First National.</div>
+<div class="note">★ 2035 and 2045 highlighted to match waterfall milestones. Interest/principal crossover occurs in 2037. Total interest over 20 years: ~$1,164,000. Total principal: ~$2,430,000.</div>
 </div>
 </div>
-
-</div><!-- /main -->
+</div>
+</div>
 
 <script>
+function showTab(id, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  if(id === 'amortization') setTimeout(buildAmortChart, 50);
+}
 function showM(id, el) {
   document.querySelectorAll('.mpanel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.mtab').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   el.classList.add('active');
 }
-
-const grd = 'rgba(46,50,72,0.5)', txt = '#7880a0';
-const yrs = [2032,2033,2034,2035,2036,2037,2038,2039,2040,2041,2042,2043,2044,2045,2046,2047,2048,2049,2050,2051];
-const interest  = [107781,104257,100572,96717,92685,88468,84057,79444,74619,69572,64293,58771,52996,46956,40638,34030,27118,19889,12328,4419];
-const principal = [76700,80223,83909,87763,91795,96012,100423,105037,109862,114909,120188,125709,131484,137525,143843,150451,157362,164591,172153,180061];
-
-new Chart(document.getElementById('amortChart'), {
-  type: 'bar',
-  data: {
-    labels: yrs,
-    datasets: [
-      { label: 'Interest', data: interest, backgroundColor: 'rgba(241,96,96,0.75)', stack: 'a', borderRadius: 2 },
-      { label: 'Principal', data: principal, backgroundColor: 'rgba(78,207,122,0.75)', stack: 'a', borderRadius: 2 },
-    ]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: true, position: 'top', labels: { boxWidth: 10, font: { size: 10 }, color: txt } } },
-    scales: {
-      x: { stacked: true, grid: { color: grd }, ticks: { color: txt, font: { size: 9 } } },
-      y: { stacked: true, grid: { color: grd }, ticks: { color: txt, font: { size: 10 },
-           callback: v => '$' + (v/1000).toFixed(0) + 'K' } }
+let amortChartInst;
+function buildAmortChart() {
+  const ctx = document.getElementById('amortChart').getContext('2d');
+  const grd = 'rgba(46,50,72,0.5)', txt = '#7880a0';
+  const yrs = [2032,2033,2034,2035,2036,2037,2038,2039,2040,2041,2042,2043,2044,2045,2046,2047,2048,2049,2050,2051];
+  const interest  = [107781,104257,100572,96717,92685,88468,84057,79444,74619,69572,64293,58771,52996,46956,40638,34030,27118,19889,12328,4419];
+  const principal = [76700,80223,83909,87763,91795,96012,100423,105037,109862,114909,120188,125709,131484,137525,143843,150451,157362,164591,172153,180061];
+  if(amortChartInst) amortChartInst.destroy();
+  amortChartInst = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: yrs,
+      datasets: [
+        { label: 'Interest', data: interest, backgroundColor: 'rgba(241,96,96,0.75)', stack: 'a', borderRadius: 2 },
+        { label: 'Principal', data: principal, backgroundColor: 'rgba(78,207,122,0.75)', stack: 'a', borderRadius: 2 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: true, position: 'top', labels: { boxWidth: 10, font: { size: 10 }, color: txt } } },
+      scales: {
+        x: { stacked: true, grid: { color: grd }, ticks: { color: txt, font: { size: 9 } } },
+        y: { stacked: true, grid: { color: grd }, ticks: { color: txt, font: { size: 10 }, callback: v => '$' + (v/1000).toFixed(0) + 'K' } }
+      }
     }
-  }
-});
+  });
+}
 </script>
 </body>
 </html>
